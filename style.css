@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+.panel {
+    width: 30%;
+    height: 100dvh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    border: 1px solid rgb(143, 127, 127);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-shadow: 0px 15px 10px 10px rgb(0 0 0 / 20%);
+    background-color: rgba(117, 115, 115, 0.507);
+    transform: translateX(-100%);
+    transition: all 0.7s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.open {
+    display: inline-block;
+    right: -20px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: 5px 5px;
+    position: absolute;
+    cursor: pointer;
+
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    transform: translateX(0);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+
+/* .panel::after {
+    content: ">>>";
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    transform: translateX(0);
+    cursor: pointer;
+
+} */
+
+.panel textarea {
+    width: 90%;
+    height: 60px;
+    margin: 45px auto;
+    border-radius: 5px;
+    border: 1px solid rgb(93, 105, 216);
+    outline: none;
+}
+
+.btn {
+    width: 90%;
+    height: 40px;
+    margin: 25px auto;
+    border-radius: 10px;
+    border: 1px solid rgb(226, 136, 62);
+    background: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.btn:active {
+    transform: scale(1.04);
+}
+
+.playZone {
+    width: 70%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    margin: auto auto;
+}
+
+.card {
+    width: 70%;
+    height: 80px;
+    border: 3px solid rgb(241, 160, 10);
+    border-radius: 5px;
+    margin: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    box-shadow: 1px 7px 20px 6px rgb(0 0 0 / 20%);
+    cursor: pointer;
+
+}
+
+.red {
+    border-color: rgb(255, 0, 0) !important;
+}
+
+.card:active {
+    transform: scale(1.04);
+}
+
+.card:focus {
+    outline: invert;
+}
+
+.englishZone {
+    width: 100%;
+}
+
+.turkishZone {
+    width: 100%;
+}
