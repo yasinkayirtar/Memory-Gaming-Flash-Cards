@@ -13,81 +13,62 @@ const playZone = document.querySelector(".playZone");
 const clear = document.getElementById("clear");
 const data = document.querySelector(".data");
 const scoreTable = document.querySelector(".score");
-
+const cardEn = document.createElement("div");
 let dataset;
-let dict = new Map();
+let dict = new Map(JSON.parse(localStorage.getItem('dict'))) || new Map();
 let score = 0;
 let wordsCount;
-
-const newDict = new Map(JSON.parse(localStorage.getItem('dict'))) ? JSON.parse(localStorage.getItem('dict')) : new Map();
-wordsCount = newDict.size;
+let lastRandom;
+const newArr = []
+let newDict;
+wordsCount = dict.size;
 
 
 function randomize() {
-    let random = Math.floor(Math.random() * 5);
-    console.log(random);
+    let random = Math.floor(Math.random() * wordsCount);
+
+    if (random === lastRandom) {
+        return randomize()
+    }
+    lastRandom = random;
     return random;
 }
 
 function playGame() {
     panel.style.transform = "translateX(-100%)";
     open.style.display = "block";
+    const keys = [...dict.keys()];
+    const values = [...dict.values()];
 
 
-
-    let i = 0;
-    // console.log(newDict.keys())
-    // console.log(newDict.values())
-    // console.log(newDict.entries((key, value) => console.log(value.key, key.value)));
-    // console.log(newDict.size);
-    const keys = [...newDict.keys()];
-    const values = [...newDict.values()];
-    console.log(keys[1], values[1][0])
-    // for (let i of newDict.entries()) {
-    //     let sum = new Array;
-    //     sum.push(i[0]);
-
-    //     console.log(sum)
-    // }
-
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 11; i++) {
 
         let random = randomize()
-        const cardEn = document.createElement("div");
+
         cardEn.classList.add("card");
         cardEn.setAttribute("data-id", values[random][0]);
-        cardEn.innerHTML = keys[random];
-        englishZone.appendChild(cardEn);
+
+        newArr.push(keys[random])
+
+
+
+        const cardTurk = document.createElement("div");
+        cardTurk.classList.add("card");
+        cardTurk.innerHTML = values[random];
+        turkishZone.appendChild(cardTurk);
+        if (i == 10) {
+            play.setAttribute("disabled", "");
+
+        }
+
 
     }
-
-    // newDict.forEach((a, b) => {
-    //     let i = 0;
-
-    //     const cardEn = document.createElement("div");
-
-    //     cardEn.classList.add("card");
-    //     cardEn.setAttribute("data-id", a[0]);
-    //     i++;
-    //     cardEn.innerHTML = b.sort((x, y) => x > y ? -1 : 1).toString();
-    //     englishZone.appendChild(cardEn)
-
-
-
-
-
-
-    //     const card = document.createElement("div");
-    //     card.classList.add("card");
-    //     card.innerHTML = a.toString();
-    //     turkishZone.appendChild(card)
-
-
-
-
-
-    // })
-
+    console.log(cardEn);
+    newArr.sort().forEach((e) => {
+        console.log(e)
+        cardEn.innerHTML = e;
+        englishZone.appendChild(cardEn);
+    });
 
 
 }
@@ -102,20 +83,17 @@ function displaySome(wordsCount) {
 function matching(e) {
     dataset = e.target.dataset.id;
 
-
-    // turkishZone.forEach((e) => {
-    //     e.addEventListener("click", (b) => {
-    //         if (b.textContent.includes(dataset)) {
-    //             console.log("ok")
-    //         }
-    //     })
-    // })
     turkishZone.addEventListener("click", (b) => {
         if (b.target.textContent.includes(dataset)) {
-            e.target.classList.add("fade");
-            b.target.classList.add("fade");
+            e.target.classList.add("scale")
+            b.target.classList.add("scale");
+            setTimeout(() => {
+                e.target.classList.add("fade");
+                b.target.classList.add("fade");
+            }, 800)
+
             score++
-            console.log("score: " + score)
+            console.log(b)
 
         } else {
             e.target.classList.add("shake");
@@ -124,6 +102,7 @@ function matching(e) {
                 b.target.classList.remove("shake");
                 e.target.classList.remove("shake");
             }, 700)
+            console.log(b)
         }
     })
 }
@@ -135,19 +114,14 @@ function matching(e) {
 
 
 function addWordDict(dict) {
-
-
     localStorage.setItem('dict', JSON.stringify([...dict]));
-
-
-
-
 
 }
 saveBtn.addEventListener("click", () => {
 
     let key = english.value.split(",");
     let values = turkish.value.split(',');
+
     if (key && values == "") {
         textArea.forEach((e) => { e.classList.add("red") })
         return
@@ -159,7 +133,9 @@ saveBtn.addEventListener("click", () => {
 
     english.value = "";
     turkish.value = "";
+
     addWordDict(dict)
+    displaySome(wordsCount)
 
 
 
@@ -179,15 +155,11 @@ close.addEventListener("click", () => {
 clear.addEventListener("click", () => {
     if (confirm("All Data will be deleted")) {
         localStorage.clear();
-        console.log("All Data will be deleted")
+
     }
 })
 play.addEventListener("click", playGame)
 
 displaySome(wordsCount)
 
-// english.addEventListener("input", addWordDict)
-// // turkish.addEventListener("input", addWordDict)
-// console.log(key, values);
-// localStorage.setItem('dict', JSON.stringify([...dict]));
 
