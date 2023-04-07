@@ -13,12 +13,14 @@ const playZone = document.querySelector(".playZone");
 const clear = document.getElementById("clear");
 const data = document.querySelector(".data");
 const scoreTable = document.querySelector(".score");
-const cardEn = document.createElement("div");
-let dataset;
+const container = document.querySelector(".container")
+// let dataset;
+let textCont;
 let dict = new Map(JSON.parse(localStorage.getItem('dict'))) || new Map();
 let score = 0;
 let wordsCount;
 let lastRandom;
+let x = { once: true }
 const newArr = []
 let newDict;
 wordsCount = dict.size;
@@ -37,18 +39,22 @@ function randomize() {
 function playGame() {
     panel.style.transform = "translateX(-100%)";
     open.style.display = "block";
+    score = 0;
+    displaySome(wordsCount, score)
     const keys = [...dict.keys()];
     const values = [...dict.values()];
 
 
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i <= 9; i++) {
 
         let random = randomize()
+        const cardEn = document.createElement("div");
 
         cardEn.classList.add("card");
         cardEn.setAttribute("data-id", values[random][0]);
+        cardEn.innerHTML = keys[random]
+        newArr.push(cardEn)
 
-        newArr.push(keys[random])
 
 
 
@@ -61,19 +67,25 @@ function playGame() {
 
         }
 
-
     }
-    console.log(cardEn);
-    newArr.sort().forEach((e) => {
-        console.log(e)
-        cardEn.innerHTML = e;
-        englishZone.appendChild(cardEn);
-    });
 
+    newArr.sort((a, b) => a > b ? 1 : -1).forEach((el) => {
+        englishZone.appendChild(el);
+    })
+    const englishCards = document.querySelectorAll(".englishZone .card");
+
+    englishCards.forEach((el) => {
+        el.addEventListener("click", matching, { once: true });
+    })
 
 }
-function displaySome(wordsCount) {
+function displaySome(wordsCount, score) {
 
+    if (score === undefined) {
+        score = 0;
+    } else if (score === 10) {
+        play.removeAttribute("disabled")
+    }
     data.innerText = `Total words: ${wordsCount}`;
     scoreTable.innerText = `Your score: ${score} /10`;
 
@@ -81,9 +93,10 @@ function displaySome(wordsCount) {
 
 
 function matching(e) {
-    dataset = e.target.dataset.id;
-
+    console.log("e:", e)
+    let dataset = e.target.dataset.id;
     turkishZone.addEventListener("click", (b) => {
+        console.log("b:", b.target)
         if (b.target.textContent.includes(dataset)) {
             e.target.classList.add("scale")
             b.target.classList.add("scale");
@@ -91,9 +104,10 @@ function matching(e) {
                 e.target.classList.add("fade");
                 b.target.classList.add("fade");
             }, 800)
-
+            x.once = true;
             score++
-            console.log(b)
+            displaySome(wordsCount, score)
+            console.log(score)
 
         } else {
             e.target.classList.add("shake");
@@ -101,12 +115,45 @@ function matching(e) {
             setTimeout(() => {
                 b.target.classList.remove("shake");
                 e.target.classList.remove("shake");
-            }, 700)
-            console.log(b)
+            }, 500)
+            x.once = false;
+
+
+
         }
-    })
+
+
+    }, x)
+
+    return e
+
 }
 
+// function matching2(e) {
+
+//     // textCont = e.target.textContent
+//     // console.log(textCont)
+//     // englishZone.addEventListener("click", (b) => {
+//     //     if (dataset === textCont) {
+//     //         console.log({ dataset, textCont })
+//     //         e.target.classList.add("scale")
+//     //         b.target.classList.add("scale");
+//     //         setTimeout(() => {
+//     //             e.target.classList.add("fade");
+//     //             b.target.classList.add("fade");
+//     //         }, 800)
+//     //     } else {
+//     //         console.log({ dataset, textCont })
+//     //         e.target.classList.add("shake");
+
+//     //             b.target.classList.remove("shake");
+//     //             e.target.classList.remove("shake");
+//     //         }, 700)
+//     //     }
+
+//     // })
+
+// }
 
 
 
@@ -115,12 +162,14 @@ function matching(e) {
 
 function addWordDict(dict) {
     localStorage.setItem('dict', JSON.stringify([...dict]));
+    location.reload();
 
 }
+
 saveBtn.addEventListener("click", () => {
 
-    let key = english.value.split(",");
-    let values = turkish.value.split(',');
+    let key = english.value.trim().split(';').join(',').split(':').join(',').split(',');
+    let values = turkish.value.trim().split(';').join(',').split(':').join(',').split(',');
 
     if (key && values == "") {
         textArea.forEach((e) => { e.classList.add("red") })
@@ -135,13 +184,15 @@ saveBtn.addEventListener("click", () => {
     turkish.value = "";
 
     addWordDict(dict)
-    displaySome(wordsCount)
+    displaySome(wordsCount);
+
 
 
 
 })
 
-englishZone.addEventListener("click", matching)
+// englishZone.addEventListener("mouseup", matching)
+// turkishZone.addEventListener("click", matching2)
 
 open.addEventListener("click", () => {
     panel.style.transform = "translateX(0)";
@@ -151,10 +202,16 @@ close.addEventListener("click", () => {
     panel.style.transform = "translateX(-100%)";
     open.style.display = "block"
 })
+// playZone.addEventListener("click", (e) => {
+//     panel.style.transform = "translateX(-100%)";
+//     open.style.display = "block";
+//     console.log("denm", e)
+// })
 
 clear.addEventListener("click", () => {
     if (confirm("All Data will be deleted")) {
         localStorage.clear();
+        location.reload()
 
     }
 })
