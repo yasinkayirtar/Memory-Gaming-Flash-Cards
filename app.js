@@ -21,7 +21,8 @@ let score = 0;
 let wordsCount;
 let lastRandom;
 let x = { once: true }
-const newArr = []
+const newArr = [];
+const newArrTurks = [];
 let newDict;
 wordsCount = dict.size;
 
@@ -35,6 +36,18 @@ function randomize() {
     lastRandom = random;
     return random;
 }
+function displaySome(wordsCount, score) {
+
+    if (score === undefined) {
+        score = 0;
+    } else if (score === 10) {
+        play.removeAttribute("disabled")
+    }
+    data.innerText = `Total words: ${wordsCount}`;
+    scoreTable.innerText = `Your score: ${score} /10`;
+
+}
+
 
 function playGame() {
     panel.style.transform = "translateX(-100%)";
@@ -61,99 +74,73 @@ function playGame() {
         const cardTurk = document.createElement("div");
         cardTurk.classList.add("card");
         cardTurk.innerHTML = values[random];
-        turkishZone.appendChild(cardTurk);
-        if (i == 10) {
+        newArrTurks.push(cardTurk);
+
+        if (i === 9) {
             play.setAttribute("disabled", "");
 
         }
 
     }
+    newArrTurks.sort((a, b) => a > b ? 1 : -1).forEach((el) => {
+        turkishZone.appendChild(el);
 
-    newArr.sort((a, b) => a > b ? 1 : -1).forEach((el) => {
+    })
+    newArr.sort((a) => Math.random() - 0.5).forEach((el) => {
         englishZone.appendChild(el);
     })
-    const englishCards = document.querySelectorAll(".englishZone .card");
+    const allCards = document.querySelectorAll(".card");
 
-    englishCards.forEach((el) => {
-        el.addEventListener("click", matching, { once: true });
+    allCards.forEach((el) => {
+        el.addEventListener("click", (event) => {
+
+            el.classList.toggle("clicked");
+            matching(event)
+        });
+
     })
 
-}
-function displaySome(wordsCount, score) {
 
-    if (score === undefined) {
-        score = 0;
-    } else if (score === 10) {
-        play.removeAttribute("disabled")
-    }
-    data.innerText = `Total words: ${wordsCount}`;
-    scoreTable.innerText = `Your score: ${score} /10`;
+
 
 }
 
 
-function matching(e) {
-    console.log("e:", e)
-    let dataset = e.target.dataset.id;
-    turkishZone.addEventListener("click", (b) => {
-        console.log("b:", b.target)
-        if (b.target.textContent.includes(dataset)) {
-            e.target.classList.add("scale")
-            b.target.classList.add("scale");
-            setTimeout(() => {
-                e.target.classList.add("fade");
-                b.target.classList.add("fade");
-            }, 800)
-            x.once = true;
-            score++
-            displaySome(wordsCount, score)
-            console.log(score)
 
+
+
+function matching(event) {
+
+
+
+
+    const clickedCards = document.querySelectorAll(".clicked");
+
+    if (clickedCards.length == 2) {
+        if (clickedCards[0].dataset.id === clickedCards[1].textContent) {
+            clickedCards.forEach((el) => {
+                el.classList.add("scale");
+                setTimeout(() => {
+                    el.classList.add("fade");
+                }, 800)
+                el.classList.remove("clicked");
+                score++ / 2;
+                displaySome(wordsCount, score / 2)
+            })
         } else {
-            e.target.classList.add("shake");
-            b.target.classList.add("shake");
-            setTimeout(() => {
-                b.target.classList.remove("shake");
-                e.target.classList.remove("shake");
-            }, 500)
-            x.once = false;
+            clickedCards.forEach((el) => {
+                el.classList.add("shake");
+                el.classList.remove("clicked");
+                setTimeout(() => {
+                    el.classList.remove("shake");
+                }, 800)
 
-
-
+            })
         }
 
-
-    }, x)
-
-    return e
-
+    }
 }
 
-// function matching2(e) {
-
-//     // textCont = e.target.textContent
-//     // console.log(textCont)
-//     // englishZone.addEventListener("click", (b) => {
-//     //     if (dataset === textCont) {
-//     //         console.log({ dataset, textCont })
-//     //         e.target.classList.add("scale")
-//     //         b.target.classList.add("scale");
-//     //         setTimeout(() => {
-//     //             e.target.classList.add("fade");
-//     //             b.target.classList.add("fade");
-//     //         }, 800)
-//     //     } else {
-//     //         console.log({ dataset, textCont })
-//     //         e.target.classList.add("shake");
-
-//     //             b.target.classList.remove("shake");
-//     //             e.target.classList.remove("shake");
-//     //         }, 700)
-//     //     }
-
-//     // })
-
-// }
 
 
 
@@ -217,6 +204,4 @@ clear.addEventListener("click", () => {
 })
 play.addEventListener("click", playGame)
 
-displaySome(wordsCount)
-
-
+displaySome(wordsCount);

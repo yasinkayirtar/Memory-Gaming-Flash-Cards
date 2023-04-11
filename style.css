@@ -161,10 +161,10 @@
     width: 100%;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    font-size: 24px;
     margin: 10px 0;
-    color: rgba(174, 255, 214, 0.896);
-    font-weight: 500;
+    color: rgb(16, 39, 27);
+    font-weight: 600;
 }
 
 .scale {
