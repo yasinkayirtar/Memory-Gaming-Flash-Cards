@@ -26,7 +26,6 @@ const newArrTurks = [];
 let newDict;
 wordsCount = dict.size;
 
-
 function randomize() {
     let random = Math.floor(Math.random() * wordsCount);
 
@@ -112,8 +111,6 @@ function playGame() {
 function matching(event) {
 
 
-
-
     const clickedCards = document.querySelectorAll(".clicked");
 
     if (clickedCards.length == 2) {
@@ -142,11 +139,6 @@ function matching(event) {
 }
 
 
-
-
-
-
-
 function addWordDict(dict) {
     localStorage.setItem('dict', JSON.stringify([...dict]));
     location.reload();
@@ -155,8 +147,8 @@ function addWordDict(dict) {
 
 saveBtn.addEventListener("click", () => {
 
-    let key = english.value.trim().split(';').join(',').split(':').join(',').split(',');
-    let values = turkish.value.trim().split(';').join(',').split(':').join(',').split(',');
+    let key = english.value.trim().split(';').join(',');
+    let values = turkish.value.trim().split(';').join(',');
 
     if (key && values == "") {
         textArea.forEach((e) => { e.classList.add("red") })
@@ -178,8 +170,7 @@ saveBtn.addEventListener("click", () => {
 
 })
 
-// englishZone.addEventListener("mouseup", matching)
-// turkishZone.addEventListener("click", matching2)
+
 
 open.addEventListener("click", () => {
     panel.style.transform = "translateX(0)";
@@ -189,11 +180,7 @@ close.addEventListener("click", () => {
     panel.style.transform = "translateX(-100%)";
     open.style.display = "block"
 })
-// playZone.addEventListener("click", (e) => {
-//     panel.style.transform = "translateX(-100%)";
-//     open.style.display = "block";
-//     console.log("denm", e)
-// })
+
 
 clear.addEventListener("click", () => {
     if (confirm("All Data will be deleted")) {
