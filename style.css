@@ -102,7 +102,7 @@
 
 .card {
     width: auto;
-    height: 60px;
+    min-height: 70px;
     border: 3px solid rgb(241, 160, 10);
     border-radius: 15px;
     margin: 20px 20px;
