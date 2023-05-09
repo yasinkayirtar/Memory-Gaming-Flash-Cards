@@ -63,7 +63,7 @@ function playGame() {
         const cardEn = document.createElement("div");
 
         cardEn.classList.add("card");
-        cardEn.setAttribute("data-id", values[random][0]);
+        cardEn.setAttribute("data-id", values[random]);
         cardEn.innerHTML = keys[random]
         newArr.push(cardEn)
 
